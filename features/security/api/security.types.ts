@@ -10,68 +10,29 @@ export type SecurityEventType =
   | 'AdminAction'
 
 export interface SecurityDashboardDto {
-  // Métriques générales
-  threatLevel: 'Low' | 'Medium' | 'High' | 'Critical'
-  activeAlerts: number
-  totalEventsLast24h: number
-  
-  // Authentification
-  failedLoginAttempts: {
-    last24h: number
-    last7days: number
-    trend: number // % change vs période précédente
+  generatedAt: string
+  period: string
+  summary: {
+    totalEvents: number
+    failedLogins: number
+    failedLoginsLastHour: number
+    accountsLocked: number
+    unauthorizedAccess: number
+    injectionAttempts: number
+    rateLimitViolations: number
+    suspiciousActivities: number
   }
-  
-  // Account lockouts
-  lockedAccounts: {
-    current: number
-    last24h: number
-  }
-  
-  // Rate limiting
-  rateLimitHits: {
-    last24h: number
-    last7days: number
-    topEndpoints: {
-      endpoint: string
-      hits: number
-    }[]
-  }
-  
-  // Injections détectées
-  injectionAttempts: {
-    last24h: number
-    last7days: number
-    types: {
-      type: 'SQL' | 'XSS' | 'Command' | 'Path'
-      count: number
-    }[]
-  }
-  
-  // IPs bloquées
-  blockedIPs: {
-    total: number
-    last24h: number
-  }
-  
-  // Tentatives d'accès non autorisé
-  unauthorizedAccess: {
-    last24h: number
-    last7days: number
-    topTargets: {
-      endpoint: string
-      attempts: number
-    }[]
-  }
-  
-  // Graphiques timeline
-  failedLoginsTimeline: {
-    timestamp: string // ISO 8601
+  topOffendingIps: {
+    ipAddress: string
+    eventCount: number
+    highestSeverity: string
+  }[]
+  eventsByType: {
+    eventType: string
     count: number
   }[]
-  
-  rateLimitTimeline: {
-    timestamp: string
+  hourlyTrend: {
+    hour: string
     count: number
   }[]
 }
@@ -88,34 +49,23 @@ export interface GetSecurityEventsParams {
 }
 
 export interface SecurityEventDto {
-  id: string
+  id: number
   eventType: SecurityEventType
   severity: 'Low' | 'Medium' | 'High' | 'Critical'
-  message: string
-  details: string | null       // JSON stringifié avec détails
+  userId: string | null
   ipAddress: string
   userAgent: string | null
-  userId: string | null
-  username: string | null
-  endpoint: string | null      // URL ciblée
-  timestamp: string            // ISO 8601
-  
-  // Contexte additionnel
-  geolocation: {
-    country: string
-    city: string
-  } | null
-  
-  actionTaken: string | null   // Action automatique (blocked, locked, etc.)
+  requestPath: string | null
+  requestMethod: string | null
+  description: string
+  alertSent: boolean
+  createdAt: string
 }
 
 export interface PaginatedSecurityEventsResponse {
-  items: SecurityEventDto[]
-  pageIndex: number
-  totalPages: number
   totalCount: number
-  hasPrevious: boolean
-  hasNext: boolean
+  filteredCount: number
+  events: SecurityEventDto[]
 }
 
 export interface GetFailedLoginsParams {

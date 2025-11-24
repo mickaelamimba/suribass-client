@@ -2,11 +2,11 @@
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import {
-    Table,
-    TableBody,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table"
 import type { PaginatedSecurityEventsResponse } from "../api/security.types"
 import { SecurityEventItem } from "./SecurityEventItem"
@@ -25,7 +25,7 @@ export function SecurityEventsTable({ data, isLoading }: SecurityEventsTableProp
     )
   }
 
-  if (!data || !data.items || data.items.length === 0) {
+  if (!data || !data.events || data.events.length === 0) {
     return (
       <Alert>
         <AlertDescription>Aucun événement de sécurité trouvé.</AlertDescription>
@@ -46,7 +46,7 @@ export function SecurityEventsTable({ data, isLoading }: SecurityEventsTableProp
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.items.map((event) => (
+          {data.events.map((event) => (
             <SecurityEventItem key={event.id} event={event} />
           ))}
         </TableBody>

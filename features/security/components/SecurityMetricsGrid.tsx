@@ -1,9 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Activity, Lock, ShieldAlert, UserX } from "lucide-react"
-import type { SecurityDashboardDto } from "../api/security.types"
 
 interface SecurityMetricsGridProps {
-  stats: SecurityDashboardDto
+  stats: {
+    failedLoginAttempts: { last24h: number; trend: number }
+    lockedAccounts: { current: number; last24h: number }
+    rateLimitHits: { last24h: number; topEndpoints: any[] }
+    injectionAttempts: { last24h: number; last7days: number }
+  }
 }
 
 export function SecurityMetricsGrid({ stats }: SecurityMetricsGridProps) {

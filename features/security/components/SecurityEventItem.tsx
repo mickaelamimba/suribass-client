@@ -14,7 +14,7 @@ export function SecurityEventItem({ event }: SecurityEventItemProps) {
       <TableCell className="font-medium">
         <div className="flex flex-col">
           <span>{event.eventType}</span>
-          <span className="text-xs text-muted-foreground">{event.message}</span>
+          <span className="text-xs text-muted-foreground">{event.description}</span>
         </div>
       </TableCell>
       <TableCell>
@@ -23,17 +23,11 @@ export function SecurityEventItem({ event }: SecurityEventItemProps) {
       <TableCell>
         <div className="flex flex-col text-sm">
           <span>{event.ipAddress}</span>
-          {event.geolocation && (
-            <span className="text-xs text-muted-foreground">
-              {event.geolocation.city}, {event.geolocation.country}
-            </span>
-          )}
         </div>
       </TableCell>
       <TableCell>
-        {event.username ? (
+        {event.userId ? (
           <div className="flex flex-col text-sm">
-            <span>{event.username}</span>
             <span className="text-xs text-muted-foreground">{event.userId}</span>
           </div>
         ) : (
@@ -41,7 +35,7 @@ export function SecurityEventItem({ event }: SecurityEventItemProps) {
         )}
       </TableCell>
       <TableCell className="text-right">
-        {format(new Date(event.timestamp), "PP p", { locale: fr })}
+        {format(new Date(event.createdAt), "PP p", { locale: fr })}
       </TableCell>
     </TableRow>
   )

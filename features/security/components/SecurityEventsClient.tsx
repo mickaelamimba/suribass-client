@@ -9,6 +9,7 @@ export function SecurityEventsClient() {
     pageIndex: 1,
     pageSize: 50,
   })
+  console.log(events)
 
   return (
     <div className="flex flex-col gap-6">
