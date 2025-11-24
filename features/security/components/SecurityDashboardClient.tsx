@@ -12,7 +12,7 @@ import { AlertTriangle } from "lucide-react"
 
 export function SecurityDashboardClient() {
   const { dashboard, isLoading, isError } = useSecurityDashboard()
-  console.log(dashboard)
+
 
   if (isLoading) {
     return (

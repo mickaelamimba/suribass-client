@@ -1,10 +1,11 @@
-import { fetcher } from "./fetcher"
 import { mutate } from "swr"
+import { fetcher } from "./fetcher"
 
 interface MutationOptions {
   onSuccess?: () => void
   onError?: (error: Error) => void
   revalidate?: string[] // Liste de clés SWR à invalider
+  token?: string | null // Token d'authentification
 }
 
 export async function apiMutation<TData, TResponse>(
@@ -17,6 +18,7 @@ export async function apiMutation<TData, TResponse>(
     const response = await fetcher<TResponse>(url, {
       method,
       body: data ? JSON.stringify(data) : undefined,
+      token: options.token || undefined,
     })
 
     // Invalider les caches SWR spécifiés
