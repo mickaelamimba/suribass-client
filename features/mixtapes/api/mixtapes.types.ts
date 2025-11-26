@@ -1,5 +1,5 @@
 export interface GetMixtapesParams {
-  pageIndex?: number
+  page?: number  // Changed from pageIndex to page
   pageSize?: number
   categoryId?: string
   search?: string
@@ -8,64 +8,43 @@ export interface GetMixtapesParams {
 
 export interface PaginatedMixtapesResponse {
   items: MixtapeDto[]
-  pageIndex: number
+  page: number  // Changed from pageIndex to page
+  pageSize: number  // Added pageSize to match API response
   totalPages: number
   totalCount: number
-  hasPrevious: boolean
-  hasNext: boolean
+  hasPreviousPage: boolean  // Changed from hasPrevious to hasPreviousPage
+  hasNextPage: boolean  // Changed from hasNext to hasNextPage
 }
 
 export interface MixtapeDto {
   id: string
-  soundCloudId: string
   title: string
   description: string | null
   embedUrl: string
   thumbnailUrl: string
-  duration: number
-  tags: string[] | null
+  duration: string  // Changed from number to string (TimeSpan format from API)
+  artistName: string  // Added artistName (present in API response)
+  tags: string  // Changed from string[] | null to string (API returns space-separated tags)
   
   // Catégorie
-  categoryId: string
   categoryName: string
   categorySlug: string
   
-  // Stats SoundCloud
-  platformStats: {
-    viewCount: number
-    likeCount: number
-    commentCount: number
-    repostCount: number
-  }
-  
-  // Stats du site
-  siteStats: {
-    viewCount: number
-    likeCount: number
-    commentCount: number
-    shareCount: number
-  }
+  // Stats
+  viewCount: number  // Simplified from nested platformStats
+  likeCount: number  // Simplified from nested platformStats
   
   // Score IA
-  score: {
-    value: number
-    recommendationMessage: string | null
-  } | null
-  
-  // Engagement utilisateur
-  isLikedByCurrentUser: boolean
-  isFavoritedByCurrentUser: boolean
+  score: number | null  // Simplified from object to nullable number
   
   // Dates
-  lastSyncAt: string
   createdAt: string
 }
 
+// MixtapeDetailDto extends MixtapeDto with same structure for now
+// In the future, add additional properties if API returns more details for individual mixtapes
 export interface MixtapeDetailDto extends MixtapeDto {
-  artistName: string
-  publishedAt: string | null
-  waveformUrl: string | null
-  lastSyncError: string | null
+  // Currently no additional properties beyond MixtapeDto
 }
 
 export interface SyncSoundCloudRequest {

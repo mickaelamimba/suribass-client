@@ -9,16 +9,11 @@ export const syncMixtapesSchema = z.object({
 
 export type SyncMixtapesFormData = z.infer<typeof syncMixtapesSchema>
 
+// Schéma pour mettre à jour une mixtape (Admin)
+// Note: categoryId removed as it's not available in API response
+// TODO: Add back when API provides categoryId in response or implement category lookup by slug
 export const updateMixtapeSchema = z.object({
-  description: z
-    .string()
-    .max(2000, "La description ne peut pas dépasser 2000 caractères")
-    .optional()
-    .nullable(),
-  categoryId: z
-    .string()
-    .uuid("Catégorie invalide")
-    .optional(),
+  description: z.string().optional().nullable(),
 })
 
 export type UpdateMixtapeFormData = z.infer<typeof updateMixtapeSchema>

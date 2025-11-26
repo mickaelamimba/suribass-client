@@ -21,8 +21,9 @@ import {
 } from "@/components/ui/select"
 import { useCategories } from "@/features/categories/hooks/useCategories"
 import { useToast } from "@/hooks/use-toast"
-import { RefreshCw } from "lucide-react"
+import { AlertCircle, RefreshCw } from "lucide-react"
 import { useState } from "react"
+import { useSoundCloud } from "../hooks/useSoundCloud"
 import { useSyncMixtapes } from "../hooks/useSyncMixtapes"
 
 export function SyncButton() {
@@ -31,7 +32,10 @@ export function SyncButton() {
   const [defaultCategoryId, setDefaultCategoryId] = useState<string>("")
   const { sync, isLoading } = useSyncMixtapes()
   const { categories, isLoading: isLoadingCategories } = useCategories()
+  const { status: soundCloudStatus, isLoading: isLoadingSoundCloud } = useSoundCloud()
   const { toast } = useToast()
+
+  const isConnected = soundCloudStatus?.connected || false
 
   const handleSync = async () => {
     try {
@@ -62,7 +66,7 @@ export function SyncButton() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button disabled={isLoadingSoundCloud || !isConnected}>
           <RefreshCw className="mr-2 h-4 w-4" />
           Synchroniser SoundCloud
         </Button>
@@ -71,8 +75,14 @@ export function SyncButton() {
         <DialogHeader>
           <DialogTitle>Synchroniser les mixtapes</DialogTitle>
           <DialogDescription>
-            Cette action va récupérer les dernières mixtapes depuis SoundCloud.
-            Cela peut prendre quelques instants.
+            {!isConnected ? (
+              <span className="flex items-center gap-2 text-yellow-600">
+                <AlertCircle className="h-4 w-4" />
+                Vous devez connecter votre compte SoundCloud avant de synchroniser.
+              </span>
+            ) : (
+              "Cette action va récupérer les dernières mixtapes depuis SoundCloud. Cela peut prendre quelques instants."
+            )}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">

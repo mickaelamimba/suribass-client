@@ -11,7 +11,7 @@ export function MixtapesListClient() {
   })
 
   const { mixtapes, isLoading } = useMixtapes({
-    pageIndex: 1,
+    page: 1,
     pageSize: 20,
     ...filters,
   })

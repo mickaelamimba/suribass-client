@@ -13,10 +13,18 @@ interface MixtapeCardProps {
 }
 
 export function MixtapeCard({ mixtape, onClick }: MixtapeCardProps) {
-  const formatDuration = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60)
-    const remainingSeconds = seconds % 60
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
+  // Parse TimeSpan format from API (e.g., "01:15:40.0030000")
+  const formatDuration = (durationString: string) => {
+    const parts = durationString.split(':')
+    if (parts.length >= 2) {
+      const hours = parseInt(parts[0], 10)
+      const minutes = parseInt(parts[1], 10)
+      if (hours > 0) {
+        return `${hours}:${minutes.toString().padStart(2, '0')}`
+      }
+      return `${minutes}:${parts[2]?.split('.')[0] || '00'}`
+    }
+    return durationString
   }
 
   return (
@@ -50,10 +58,10 @@ export function MixtapeCard({ mixtape, onClick }: MixtapeCardProps) {
         </div>
 
         {/* Score Badge (if high) */}
-        {mixtape.score && mixtape.score.value >= 80 && (
+        {mixtape.score !== null && mixtape.score >= 80 && (
           <div className="absolute top-2 left-2">
             <Badge variant="secondary" className="bg-yellow-500/90 text-white hover:bg-yellow-500">
-              ★ {mixtape.score.value}
+              ★ {mixtape.score}
             </Badge>
           </div>
         )}
@@ -81,11 +89,11 @@ export function MixtapeCard({ mixtape, onClick }: MixtapeCardProps) {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1">
               <Play className="h-3 w-3" />
-              <span>{mixtape.platformStats.viewCount + mixtape.siteStats.viewCount}</span>
+              <span>{mixtape.viewCount}</span>
             </div>
             <div className="flex items-center gap-1">
               <Heart className="h-3 w-3" />
-              <span>{mixtape.platformStats.likeCount + mixtape.siteStats.likeCount}</span>
+              <span>{mixtape.likeCount}</span>
             </div>
           </div>
         </div>

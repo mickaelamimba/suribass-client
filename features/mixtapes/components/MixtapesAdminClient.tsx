@@ -3,26 +3,65 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table"
-import { SyncButton } from "@/features/mixtapes/components"
+import { SoundCloudConnect, SoundCloudStatus, SyncButton } from "@/features/mixtapes/components"
 import { useMixtapes } from "@/features/mixtapes/hooks/useMixtapes"
+import { useToast } from "@/hooks/use-toast"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import { Edit2 } from "lucide-react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
+import { useEffect } from "react"
 
 export function MixtapesAdminClient() {
   const { mixtapes, isLoading } = useMixtapes({
-    pageIndex: 1,
+    page: 1,
     pageSize: 50,
     sortBy: "recent",
   })
+  const searchParams = useSearchParams()
+  const { toast } = useToast()
+
+  // Gérer les messages de callback SoundCloud
+  useEffect(() => {
+    const connected = searchParams.get("soundcloud_connected")
+    const error = searchParams.get("soundcloud_error")
+
+    if (connected === "true") {
+      toast({
+        title: "SoundCloud connecté",
+        description: "Votre compte SoundCloud a été connecté avec succès.",
+      })
+
+      // Nettoyer l'URL
+      window.history.replaceState({}, "", "/mixtapes/admin")
+    }
+
+    if (error) {
+      const errorMessages: Record<string, string> = {
+        no_code: "Aucun code d'autorisation reçu",
+        unauthorized: "Vous devez être connecté",
+        callback_failed: "Échec du traitement du callback",
+        unknown_error: "Une erreur inconnue est survenue",
+      }
+
+      toast({
+        title: "Erreur de connexion SoundCloud",
+        description: errorMessages[error] || decodeURIComponent(error),
+        variant: "destructive",
+      })
+
+      // Nettoyer l'URL
+      window.history.replaceState({}, "", "/mixtapes/admin")
+    }
+  }, [searchParams, toast])
 
   return (
     <div className="flex flex-col gap-8">
@@ -33,8 +72,14 @@ export function MixtapesAdminClient() {
             Synchronisez et gérez les mixtapes depuis SoundCloud.
           </p>
         </div>
-        <SyncButton />
+        <div className="flex items-center gap-4">
+          <SoundCloudStatus variant="default" showDetails />
+          <SyncButton />
+        </div>
       </div>
+
+      {/* Carte de connexion SoundCloud */}
+      <SoundCloudConnect />
 
       <div className="rounded-md border">
         <Table>
@@ -58,26 +103,23 @@ export function MixtapesAdminClient() {
             ) : mixtapes?.items.map((mixtape) => (
               <TableRow key={mixtape.id}>
                 <TableCell className="font-medium">
-                  <div className="flex flex-col">
-                    <span>{mixtape.title}</span>
-                    <span className="text-xs text-muted-foreground">ID: {mixtape.soundCloudId}</span>
-                  </div>
+                  {mixtape.title}
                 </TableCell>
                 <TableCell>
                   <Badge variant="outline">{mixtape.categoryName}</Badge>
                 </TableCell>
                 <TableCell>
-                  {mixtape.platformStats.viewCount + mixtape.siteStats.viewCount}
+                  {mixtape.viewCount}
                 </TableCell>
                 <TableCell>
-                  {mixtape.score ? (
-                    <Badge variant={mixtape.score.value >= 80 ? "default" : "secondary"}>
-                      {mixtape.score.value}
+                  {mixtape.score !== null ? (
+                    <Badge variant={mixtape.score >= 80 ? "default" : "secondary"}>
+                      {mixtape.score}
                     </Badge>
                   ) : "-"}
                 </TableCell>
                 <TableCell>
-                  {format(new Date(mixtape.lastSyncAt), "PP p", { locale: fr })}
+                  {format(new Date(mixtape.createdAt), "PP p", { locale: fr })}
                 </TableCell>
                 <TableCell className="text-right">
                   <Button variant="ghost" size="sm" asChild>

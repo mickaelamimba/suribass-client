@@ -6,19 +6,11 @@ import {
     FieldGroup,
     FieldLabel
 } from "@/components/ui/field"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { useForm } from "@tanstack/react-form"
 import type { MixtapeDetailDto } from "../api/mixtapes.types"
 import { useUpdateMixtape } from "../hooks/useUpdateMixtape"
-import { updateMixtapeSchema } from "../schemas/mixtape.schema"
 
 // TODO: Fetch from API
 const CATEGORIES = [
@@ -40,16 +32,11 @@ export function UpdateMixtapeForm({ mixtape, onSuccess }: UpdateMixtapeFormProps
   const form = useForm({
     defaultValues: {
       description: mixtape.description || "",
-      categoryId: mixtape.categoryId,
-    },
-    validators: {
-      onChange: updateMixtapeSchema,
     },
     onSubmit: async ({ value }) => {
       try {
         await updateMixtape(mixtape.id, {
           description: value.description || undefined,
-          categoryId: value.categoryId,
         })
         toast({
           title: "Mixtape mise à jour",
@@ -75,40 +62,14 @@ export function UpdateMixtapeForm({ mixtape, onSuccess }: UpdateMixtapeFormProps
       }}
       className="space-y-4"
     >
-      <form.Field
-        name="categoryId"
-        validators={{
-          onChange: updateMixtapeSchema.shape.categoryId,
-        }}
-      >
-        {(field) => (
-          <FieldGroup>
-            <FieldLabel htmlFor={field.name}>Catégorie</FieldLabel>
-            <Select
-              value={field.state.value}
-              onValueChange={field.handleChange}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Sélectionner une catégorie" />
-              </SelectTrigger>
-              <SelectContent>
-                {CATEGORIES.map((category) => (
-                  <SelectItem key={category.id} value={category.id}>
-                    {category.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FieldError errors={field.state.meta.errors} />
-          </FieldGroup>
-        )}
-      </form.Field>
+      {/* Category selection removed temporarily - API doesn't return categoryId 
+          TODO: Either add categoryId to API response or fetch categories and map by slug */}
+      <div className="rounded-lg border border-muted bg-muted/50 p-4 text-sm text-muted-foreground">
+        <strong>Catégorie actuelle:</strong> {mixtape.categoryName}
+      </div>
 
       <form.Field
         name="description"
-        validators={{
-          onChange: updateMixtapeSchema.shape.description,
-        }}
       >
         {(field) => (
           <FieldGroup>

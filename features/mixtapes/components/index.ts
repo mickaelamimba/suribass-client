@@ -8,6 +8,8 @@ export * from "./MixtapesAdminClient"
 export * from "./MixtapeSkeleton"
 export * from "./MixtapesListClient"
 export * from "./MixtapeStats"
+export * from "./SoundCloudConnect"
+export * from "./SoundCloudStatus"
 export * from "./SyncButton"
 export * from "./UpdateMixtapeForm"
 

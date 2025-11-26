@@ -54,11 +54,11 @@ export function MixtapeDetailView({ mixtape }: MixtapeDetailViewProps) {
             </div>
 
             {/* Tags */}
-            {mixtape.tags && mixtape.tags.length > 0 && (
+            {mixtape.tags && mixtape.tags.trim().length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {mixtape.tags.map((tag) => (
-                  <Badge key={tag} variant="outline" className="text-xs">
-                    #{tag}
+                {mixtape.tags.split(' ').filter(tag => tag.trim()).map((tag, index) => (
+                  <Badge key={index} variant="outline" className="text-xs">
+                    #{tag.trim()}
                   </Badge>
                 ))}
               </div>
@@ -86,8 +86,8 @@ export function MixtapeDetailView({ mixtape }: MixtapeDetailViewProps) {
         {/* Sidebar */}
         <div className="flex flex-col gap-6">
           <MixtapeStats 
-            platformStats={mixtape.platformStats}
-            siteStats={mixtape.siteStats}
+            viewCount={mixtape.viewCount}
+            likeCount={mixtape.likeCount}
             score={mixtape.score}
           />
         </div>
