@@ -4,19 +4,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog"
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table"
 import { useToast } from "@/hooks/use-toast"
 import { Plus, Trash2 } from "lucide-react"
@@ -24,6 +24,9 @@ import { useState } from "react"
 import useSWR from "swr"
 import { partnersApi } from "../api/partners.api"
 import type { PartnerCollaborationsResponse } from "../api/partners.types"
+
+
+import { useAuthenticatedFetcher } from "@/lib/use-authenticated-fetcher"
 import { AddCollaborationForm } from "./AddCollaborationForm"
 
 interface CollaborationManagerProps {
@@ -31,9 +34,12 @@ interface CollaborationManagerProps {
 }
 
 export function CollaborationManager({ partnerId }: CollaborationManagerProps) {
+  const authenticatedFetcher = useAuthenticatedFetcher()
+  const key = `/partners/${partnerId}/collaborations`
+  
   const { data, mutate } = useSWR<PartnerCollaborationsResponse>(
-    `/partners/${partnerId}/collaborations`,
-    () => partnersApi.getPartnerCollaborations(partnerId)
+    key,
+    authenticatedFetcher
   )
   const { toast } = useToast()
   const [isAddOpen, setIsAddOpen] = useState(false)

@@ -1,3 +1,4 @@
+import { useAuth } from "@/features/auth/providers/auth-provider"
 import { ApiError } from "@/lib/fetcher"
 import { useState } from "react"
 import { mixtapesApi } from "../api/mixtapes.api"
@@ -7,6 +8,7 @@ export const useSyncMixtapes = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<SyncResultDto | null>(null)
+  const { accessToken } = useAuth()
 
   const sync = async (data?: SyncSoundCloudRequest) => {
     setIsLoading(true)
@@ -14,7 +16,7 @@ export const useSyncMixtapes = () => {
     setResult(null)
 
     try {
-      const syncResult = await mixtapesApi.syncFromSoundCloud(data)
+      const syncResult = await mixtapesApi.syncFromSoundCloud(data, accessToken)
       setResult(syncResult)
       return syncResult
     } catch (err) {

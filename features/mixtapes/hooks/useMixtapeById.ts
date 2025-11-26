@@ -1,11 +1,14 @@
+import { useAuthenticatedFetcher } from "@/lib/use-authenticated-fetcher"
 import useSWR from "swr"
-import { mixtapesApi } from "../api/mixtapes.api"
 import type { MixtapeDetailDto } from "../api/mixtapes.types"
 
 export const useMixtapeById = (id: string) => {
+  const authenticatedFetcher = useAuthenticatedFetcher()
+  const key = id ? `/mixtapes/${id}` : null
+  
   const { data, error, isLoading, mutate } = useSWR<MixtapeDetailDto>(
-    id ? `/mixtapes/${id}` : null,
-    () => mixtapesApi.getMixtapeById(id),
+    key,
+    authenticatedFetcher,
     {
       revalidateOnFocus: false,
     }

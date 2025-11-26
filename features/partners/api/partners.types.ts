@@ -23,21 +23,9 @@ export interface GetPartnersParams {
   search?: string
 }
 
-// Re-using TrackDto from tracks feature if possible, but defining a minimal one here for independence if needed
-// Assuming we can import or redefine. For now, using a placeholder or minimal definition.
-// In a real scenario, we might import { TrackDto } from "@/features/tracks/api/tracks.types"
-// But to avoid circular deps or tight coupling, we can redefine or use a shared type.
-// Let's assume a basic structure for now.
-export interface TrackDto {
-  id: string
-  title: string
-  artistName: string
-  coverUrl: string | null
-  duration: number
-  playCount: number
-  createdAt: string
-  // ... other fields
-}
+import type { PaginatedTracksResponse, TrackDto } from "@/features/tracks/api/tracks.types"
+
+export { PaginatedTracksResponse, TrackDto }
 
 export interface PartnerDetailDto extends PartnerDto {
   tracks: TrackDto[]
@@ -75,15 +63,6 @@ export interface PartnerDashboardDto {
       count: number
     }[]
   }
-}
-
-export interface PaginatedTracksResponse {
-  items: TrackDto[]
-  pageIndex: number
-  totalPages: number
-  totalCount: number
-  hasPrevious: boolean
-  hasNext: boolean
 }
 
 export interface GetPartnerTracksParams {

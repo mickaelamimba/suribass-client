@@ -2,72 +2,56 @@ export interface TrackDto {
   id: string
   title: string
   description: string | null
-  playlistInfo: string | null
   
   // Plateforme
-  platform: 'SoundCloud' | 'YouTube' | 'Spotify'
-  platformUrl: string
+  platform: number              // 0=SoundCloud, 1=YouTube, 2=Spotify
   embedUrl: string
   
   // Métadonnées
   thumbnailUrl: string
-  duration: number              // En secondes
+  duration: string              // Format "00:00:00"
   artistName: string
-  publishedAt: string | null    // ISO 8601
-  
-  // Partenaire
-  partnerId: string
-  partnerName: string
-  partnerAvatarUrl: string | null
   
   // Catégorie
-  categoryId: string
-  categoryName: string
-  categorySlug: string
+  categoryName: string | null
+  categorySlug: string | null
   
   // Stats
-  stats: {
-    viewCount: number
-    likeCount: number
-    commentCount: number
-    shareCount: number
-  }
+  viewCount: number
+  likeCount: number
   
   // Score IA
-  score: {
-    value: number               // 0-100
-    recommendationMessage: string | null
-  } | null
-  
-  // Collaborateurs
-  collaborators: {
-    partnerId: string
-    partnerName: string
-    partnerAvatarUrl: string | null
-    role: string                // "featuring", "producer", etc.
-  }[]
-  
-  // Engagement utilisateur
-  isLikedByCurrentUser: boolean       // false si non auth
-  isFavoritedByCurrentUser: boolean   // false si non auth
+  score: number | null
   
   // Dates
   createdAt: string            // ISO 8601
-  updatedAt: string
 }
 
 export interface TrackDetailDto extends TrackDto {
   // Pas de champs additionnels pour l'instant
 }
 
-export interface PaginatedTracksResponse {
-  items: TrackDto[]
-  pageIndex: number
+// Wrapper de réponse API standard
+export interface ApiResponse<T> {
+  success: boolean
+  data: T
+  errors: string[]
+  message: string | null
+}
+
+// Structure de pagination réelle de l'API
+export interface PaginatedData<T> {
+  items: T[]
+  page: number
+  pageSize: number
   totalPages: number
   totalCount: number
-  hasPrevious: boolean
-  hasNext: boolean
+  hasPreviousPage: boolean
+  hasNextPage: boolean
 }
+
+// Type pour la réponse paginée des tracks
+export type PaginatedTracksResponse = PaginatedData<TrackDto>
 
 export interface GetTracksParams {
   pageIndex?: number          // Default: 1
@@ -99,11 +83,13 @@ export interface ExtractMetadataRequest {
 }
 
 export interface ExtractedMetadata {
-  platform: 'SoundCloud' | 'YouTube' | 'Spotify'
+  platform: number              // 0=SoundCloud, 1=YouTube, 2=Spotify
+  platformId: string
   title: string
+  description: string | null
   artistName: string
   thumbnailUrl: string
-  duration: number             // En secondes
+  duration: string              // Format "00:00:00" depuis le backend
   embedUrl: string
-  publishedAt: string | null   // ISO 8601
+  publishedAt: string | null    // ISO 8601
 }

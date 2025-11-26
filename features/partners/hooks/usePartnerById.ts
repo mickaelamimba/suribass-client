@@ -1,11 +1,14 @@
+import { useAuthenticatedFetcher } from "@/lib/use-authenticated-fetcher"
 import useSWR from "swr"
-import { partnersApi } from "../api/partners.api"
 import type { PartnerDetailDto } from "../api/partners.types"
 
 export const usePartnerById = (id: string) => {
+  const authenticatedFetcher = useAuthenticatedFetcher()
+  const key = id ? `/partners/${id}` : null
+  
   const { data, error, isLoading, mutate } = useSWR<PartnerDetailDto>(
-    id ? `/partners/${id}` : null,
-    () => partnersApi.getPartnerById(id),
+    key,
+    authenticatedFetcher,
     {
       revalidateOnFocus: false,
     }

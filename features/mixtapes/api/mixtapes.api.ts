@@ -1,12 +1,12 @@
 import { apiMutation } from "@/lib/api-helpers"
 import { fetcher } from "@/lib/fetcher"
 import type {
-    GetMixtapesParams,
-    MixtapeDetailDto,
-    PaginatedMixtapesResponse,
-    SyncResultDto,
-    SyncSoundCloudRequest,
-    UpdateMixtapeRequest,
+  GetMixtapesParams,
+  MixtapeDetailDto,
+  PaginatedMixtapesResponse,
+  SyncResultDto,
+  SyncSoundCloudRequest,
+  UpdateMixtapeRequest,
 } from "./mixtapes.types"
 
 export const mixtapesApi = {
@@ -31,24 +31,26 @@ export const mixtapesApi = {
     fetcher<MixtapeDetailDto>(`/mixtapes/${id}`),
   
   // POST - Synchroniser depuis SoundCloud (Admin only)
-  syncFromSoundCloud: (data?: SyncSoundCloudRequest) =>
+  syncFromSoundCloud: (data?: SyncSoundCloudRequest, token?: string | null) =>
     apiMutation<SyncSoundCloudRequest | undefined, SyncResultDto>(
       "/mixtapes/sync",
       "POST",
       data,
       {
         revalidate: ["/mixtapes"], // Invalide la liste des mixtapes
+        token,
       }
     ),
   
   // PUT - Mettre à jour une mixtape (Admin only)
-  updateMixtape: (id: string, data: UpdateMixtapeRequest) =>
+  updateMixtape: (id: string, data: UpdateMixtapeRequest, token?: string | null) =>
     apiMutation<UpdateMixtapeRequest, MixtapeDetailDto>(
       `/mixtapes/${id}`,
       "PUT",
       data,
       {
         revalidate: [`/mixtapes/${id}`, "/mixtapes"],
+        token,
       }
     ),
 }

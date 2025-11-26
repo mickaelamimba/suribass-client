@@ -1,16 +1,27 @@
+import { useAuthenticatedFetcher } from "@/lib/use-authenticated-fetcher"
 import useSWR from "swr"
-import { securityApi } from "../api/security.api"
 import type {
-    GetSecurityEventsParams,
-    PaginatedSecurityEventsResponse
+  GetSecurityEventsParams,
+  PaginatedSecurityEventsResponse
 } from "../api/security.types"
 
 export const useSecurityEvents = (params: GetSecurityEventsParams = {}) => {
-  const key = `/admin/security/events?${JSON.stringify(params)}`
+  const authenticatedFetcher = useAuthenticatedFetcher()
+  
+  const queryString = new URLSearchParams(
+    Object.entries(params).reduce((acc, [key, value]) => {
+      if (value !== undefined && value !== null) {
+        acc[key] = value.toString()
+      }
+      return acc
+    }, {} as Record<string, string>)
+  ).toString()
+  
+  const key = `/admin/security/events?${queryString}`
   
   const { data, error, isLoading, mutate } = useSWR<PaginatedSecurityEventsResponse | null>(
     key,
-    () => securityApi.getSecurityEvents(params),
+    () => authenticatedFetcher(key),
     {
       refreshInterval: 10000, // Refresh toutes les 10 secondes
     }

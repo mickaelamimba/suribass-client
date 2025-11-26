@@ -1,11 +1,14 @@
+import { useAuthenticatedFetcher } from "@/lib/use-authenticated-fetcher"
 import useSWR from "swr"
-import { categoriesApi } from "../api/categories.api"
 import type { CategoryDto } from "../api/categories.types"
 
 export const useCategoryBySlug = (slug: string) => {
+  const authenticatedFetcher = useAuthenticatedFetcher()
+  const key = slug ? `/categories/${slug}` : null
+  
   const { data, error, isLoading, mutate } = useSWR<CategoryDto>(
-    slug ? `/categories/${slug}` : null,
-    () => categoriesApi.getCategoryBySlug(slug),
+    key,
+    authenticatedFetcher,
     {
       revalidateOnFocus: false,
     }

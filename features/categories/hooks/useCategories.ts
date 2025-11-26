@@ -15,7 +15,7 @@ export const useCategories = () => {
   )
 
   return {
-    categories: data?.items || [],
+    categories: data || [],
     isLoading,
     isError: !!error,
     error,

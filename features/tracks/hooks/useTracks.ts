@@ -1,13 +1,24 @@
+import { useAuthenticatedFetcher } from "@/lib/use-authenticated-fetcher"
 import useSWR from "swr"
-import { tracksApi } from "../api/tracks.api"
 import type { GetTracksParams, PaginatedTracksResponse } from "../api/tracks.types"
 
 export const useTracks = (params: GetTracksParams = {}) => {
-  const key = `/tracks?${JSON.stringify(params)}`
+  const authenticatedFetcher = useAuthenticatedFetcher()
+  
+  const queryString = new URLSearchParams(
+    Object.entries(params).reduce((acc, [key, value]) => {
+      if (value !== undefined && value !== null) {
+        acc[key] = value.toString()
+      }
+      return acc
+    }, {} as Record<string, string>)
+  ).toString()
+  
+  const key = `/tracks?${queryString}`
   
   const { data, error, isLoading, mutate } = useSWR<PaginatedTracksResponse>(
     key,
-    () => tracksApi.getTracks(params),
+    () => authenticatedFetcher(key),
     {
       revalidateOnFocus: false,
       dedupingInterval: 5000,

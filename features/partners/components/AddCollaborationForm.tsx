@@ -2,17 +2,17 @@
 
 import { Button } from "@/components/ui/button"
 import {
-    FieldError,
-    FieldGroup,
-    FieldLabel
+  FieldError,
+  FieldGroup,
+  FieldLabel
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
 import { useForm } from "@tanstack/react-form"
@@ -86,7 +86,7 @@ export function AddCollaborationForm({ partnerId, onSuccess }: AddCollaborationF
                 <SelectValue placeholder="Sélectionner une track" />
               </SelectTrigger>
               <SelectContent>
-                {tracks?.items.map((track) => (
+                {tracks?.items?.map((track) => (
                   <SelectItem key={track.id} value={track.id}>
                     {track.title}
                   </SelectItem>

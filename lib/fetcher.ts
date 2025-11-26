@@ -22,9 +22,6 @@ export async function fetcher<T>(
   const { token, ...fetchOptions } = options
   
   const fullUrl = `${API_BASE_URL}${url}`
-  console.log('🔍 Fetcher - API_BASE_URL:', API_BASE_URL)
-  console.log('🔍 Fetcher - Full URL:', fullUrl)
-  console.log('🔍 Fetcher - Has token:', !!token)
   
   const headers = new Headers(fetchOptions.headers)
   
@@ -52,6 +49,15 @@ export async function fetcher<T>(
     )
   }
 
-  return response.json()
+  const responseData = await response.json()
+  
+  // Si le backend renvoie une structure envelope { success, data, errors, message }
+  // extraire uniquement data
+  if (responseData && typeof responseData === 'object' && 'data' in responseData && 'success' in responseData) {
+    return responseData.data
+  }
+  
+  // Sinon retourner la réponse telle quelle
+  return responseData
 }
 export const swrFetcher = (url: string, options?: FetcherOptions) => fetcher(url, options)

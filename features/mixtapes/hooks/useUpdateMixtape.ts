@@ -1,3 +1,4 @@
+import { useAuth } from "@/features/auth/providers/auth-provider"
 import { ApiError } from "@/lib/fetcher"
 import { useState } from "react"
 import { mixtapesApi } from "../api/mixtapes.api"
@@ -6,13 +7,14 @@ import type { UpdateMixtapeRequest } from "../api/mixtapes.types"
 export const useUpdateMixtape = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { accessToken } = useAuth()
 
   const updateMixtape = async (id: string, data: UpdateMixtapeRequest) => {
     setIsLoading(true)
     setError(null)
 
     try {
-      const result = await mixtapesApi.updateMixtape(id, data)
+      const result = await mixtapesApi.updateMixtape(id, data, accessToken)
       return result
     } catch (err) {
       if (err instanceof ApiError) {

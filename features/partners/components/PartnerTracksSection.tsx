@@ -58,7 +58,7 @@ export function PartnerTracksSection({ partnerId, isOwner }: PartnerTracksSectio
                   Chargement...
                 </TableCell>
               </TableRow>
-            ) : !tracks?.items.length ? (
+            ) : !tracks?.items?.length ? (
               <TableRow>
                 <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
                   Aucune track trouvée.
@@ -72,9 +72,9 @@ export function PartnerTracksSection({ partnerId, isOwner }: PartnerTracksSectio
                     {format(new Date(track.createdAt), "PP", { locale: fr })}
                   </TableCell>
                   <TableCell className="text-right">
-                    {Math.floor(track.duration / 60)}:{(track.duration % 60).toString().padStart(2, '0')}
+                    {track.duration}
                   </TableCell>
-                  <TableCell className="text-right">{track.playCount}</TableCell>
+                  <TableCell className="text-right">{track.viewCount}</TableCell>
                 </TableRow>
               ))
             )}

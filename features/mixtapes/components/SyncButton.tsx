@@ -12,6 +12,14 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import { useCategories } from "@/features/categories/hooks/useCategories"
 import { useToast } from "@/hooks/use-toast"
 import { RefreshCw } from "lucide-react"
 import { useState } from "react"
@@ -20,13 +28,18 @@ import { useSyncMixtapes } from "../hooks/useSyncMixtapes"
 export function SyncButton() {
   const [open, setOpen] = useState(false)
   const [tags, setTags] = useState("")
+  const [defaultCategoryId, setDefaultCategoryId] = useState<string>("")
   const { sync, isLoading } = useSyncMixtapes()
+  const { categories, isLoading: isLoadingCategories } = useCategories()
   const { toast } = useToast()
 
   const handleSync = async () => {
     try {
-      const tagList = tags ? tags.split(",").map(t => t.trim()) : undefined
-      const result = await sync({ tags: tagList })
+      // Envoyer tags comme string et defaultCategoryId
+      const result = await sync({
+        tags: tags || undefined,
+        defaultCategoryId: defaultCategoryId || undefined,
+      })
       
       if (result) {
         toast({
@@ -34,6 +47,8 @@ export function SyncButton() {
           description: `${result.newMixtapes} ajoutées, ${result.updatedMixtapes} mises à jour.`,
         })
         setOpen(false)
+        setTags("")
+        setDefaultCategoryId("")
       }
     } catch (error) {
       toast({
@@ -63,19 +78,50 @@ export function SyncButton() {
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="tags" className="text-right">
-              Tags (opt)
+              Tags
             </Label>
             <Input
               id="tags"
-              placeholder="hip-hop, rnb"
+              placeholder="remix"
               className="col-span-3"
               value={tags}
               onChange={(e) => setTags(e.target.value)}
             />
           </div>
+          
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="category" className="text-right">
+              Catégorie
+            </Label>
+            <Select
+              value={defaultCategoryId}
+              onValueChange={setDefaultCategoryId}
+            >
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Sélectionner une catégorie" />
+              </SelectTrigger>
+              <SelectContent>
+                {isLoadingCategories ? (
+                  <SelectItem value="loading" disabled>
+                    Chargement...
+                  </SelectItem>
+                ) : categories.length === 0 ? (
+                  <SelectItem value="empty" disabled>
+                    Aucune catégorie
+                  </SelectItem>
+                ) : (
+                  categories.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))
+                )}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <DialogFooter>
-          <Button onClick={handleSync} disabled={isLoading}>
+          <Button onClick={handleSync} disabled={isLoading || !defaultCategoryId}>
             {isLoading ? (
               <>
                 <RefreshCw className="mr-2 h-4 w-4 animate-spin" />

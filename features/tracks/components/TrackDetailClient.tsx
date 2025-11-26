@@ -2,37 +2,34 @@
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/features/auth"
-import { CategoryBadge } from "@/features/categories/components/CategoryBadge"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import {
-    AlertTriangle,
-    ArrowLeft,
-    Calendar,
-    Heart,
-    Pencil,
-    Share2,
-    Star,
-    Trash2
+  AlertTriangle,
+  ArrowLeft,
+  Calendar,
+  Heart,
+  Pencil,
+  Share2,
+  Star,
+  Trash2
 } from "lucide-react"
 import Link from "next/link"
 import { useDeleteTrack } from "../hooks/useDeleteTrack"
 import { useTrackById } from "../hooks/useTrackById"
-import { CollaboratorsList } from "./CollaboratorsList"
 import { TrackPlayer } from "./TrackPlayer"
 import { TrackStats } from "./TrackStats"
 
@@ -44,6 +41,8 @@ export function TrackDetailClient({ id }: TrackDetailClientProps) {
   const { track, isLoading, isError } = useTrackById(id)
   const { deleteTrack } = useDeleteTrack()
   const { user } = useAuth()
+  
+  const platformNames = ['SoundCloud', 'YouTube', 'Spotify']
 
   if (isLoading) {
     return (
@@ -74,7 +73,7 @@ export function TrackDetailClient({ id }: TrackDetailClientProps) {
     )
   }
 
-  const isOwner = user?.id === track.partnerId || user?.role === "Admin"
+  const isOwner = user?.role === "Admin" // TODO: Check ownership when partnerId is available
 
   return (
     <div className="container py-8">
@@ -98,20 +97,12 @@ export function TrackDetailClient({ id }: TrackDetailClientProps) {
               <div>
                 <h1 className="text-3xl font-bold tracking-tight">{track.title}</h1>
                 <div className="mt-2 flex items-center gap-2 text-muted-foreground">
-                  <Link href={`/partners/${track.partnerId}`} className="flex items-center gap-2 hover:text-foreground">
-                    <Avatar className="h-6 w-6">
-                      <AvatarImage src={track.partnerAvatarUrl || undefined} />
-                      <AvatarFallback>{track.partnerName[0]}</AvatarFallback>
-                    </Avatar>
-                    <span className="font-medium">{track.partnerName}</span>
-                  </Link>
+                  <span className="font-medium">{track.artistName}</span>
                   <span>•</span>
                   <div className="flex items-center gap-1">
                     <Calendar className="h-4 w-4" />
                     <span>
-                      {track.publishedAt 
-                        ? format(new Date(track.publishedAt), "d MMMM yyyy", { locale: fr })
-                        : "Date inconnue"}
+                      {format(new Date(track.createdAt), "d MMMM yyyy", { locale: fr })}
                     </span>
                   </div>
                 </div>
@@ -119,10 +110,10 @@ export function TrackDetailClient({ id }: TrackDetailClientProps) {
 
               <div className="flex gap-2">
                 <Button variant="outline" size="icon">
-                  <Heart className={track.isLikedByCurrentUser ? "fill-primary text-primary" : ""} />
+                  <Heart />
                 </Button>
                 <Button variant="outline" size="icon">
-                  <Star className={track.isFavoritedByCurrentUser ? "fill-yellow-400 text-yellow-400" : ""} />
+                  <Star />
                 </Button>
                 <Button variant="outline" size="icon">
                   <Share2 />
@@ -131,20 +122,17 @@ export function TrackDetailClient({ id }: TrackDetailClientProps) {
             </div>
 
             <div className="flex items-center gap-2">
-              <CategoryBadge 
-                category={{
-                  id: track.categoryId,
-                  name: track.categoryName,
-                  slug: track.categorySlug,
-                  description: null,
-                  trackCount: 0,
-                  mixtapeCount: 0
-                }} 
-              />
-              <Badge variant="outline">{track.platform}</Badge>
+              {track.categoryName && (
+                <Badge variant="outline">{track.categoryName}</Badge>
+              )}
+              <Badge variant="outline">{platformNames[track.platform] || 'Unknown'}</Badge>
             </div>
 
-            <TrackStats stats={track.stats} score={track.score} className="text-base" />
+            <TrackStats 
+              stats={{ viewCount: track.viewCount, likeCount: track.likeCount }} 
+              score={track.score} 
+              className="text-base" 
+            />
           </div>
 
           <div className="space-y-4">
@@ -158,14 +146,7 @@ export function TrackDetailClient({ id }: TrackDetailClientProps) {
             </div>
           </div>
 
-          {track.playlistInfo && (
-            <div className="rounded-lg border bg-muted/50 p-4">
-              <h4 className="font-semibold mb-2">Infos Playlist</h4>
-              <p className="text-sm text-muted-foreground">{track.playlistInfo}</p>
-            </div>
-          )}
 
-          <CollaboratorsList collaborators={track.collaborators} />
         </div>
 
         <div className="space-y-6">

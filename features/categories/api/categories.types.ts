@@ -7,9 +7,7 @@ export interface CategoryDto {
   mixtapeCount: number
 }
 
-export interface CategoriesResponse {
-  items: CategoryDto[]
-}
+export type CategoriesResponse = CategoryDto[]
 
 export interface CreateCategoryRequest {
   name: string

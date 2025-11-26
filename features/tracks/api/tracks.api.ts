@@ -1,13 +1,13 @@
 import { apiMutation } from "@/lib/api-helpers"
 import { fetcher } from "@/lib/fetcher"
 import type {
-    CreateTrackRequest,
-    ExtractMetadataRequest,
-    ExtractedMetadata,
-    GetTracksParams,
-    PaginatedTracksResponse,
-    TrackDetailDto,
-    UpdateTrackRequest,
+  CreateTrackRequest,
+  ExtractMetadataRequest,
+  ExtractedMetadata,
+  GetTracksParams,
+  PaginatedTracksResponse,
+  TrackDetailDto,
+  UpdateTrackRequest,
 } from "./tracks.types"
 
 export const tracksApi = {
@@ -32,43 +32,49 @@ export const tracksApi = {
     fetcher<TrackDetailDto>(`/tracks/${id}`),
   
   // POST - Extraire métadonnées
-  extractMetadata: (data: ExtractMetadataRequest) =>
+  extractMetadata: (data: ExtractMetadataRequest, token?: string | null) =>
     apiMutation<ExtractMetadataRequest, ExtractedMetadata>(
       "/tracks/extract-metadata",
       "POST",
-      data
+      data,
+      {
+        token,
+      }
     ),
   
   // POST - Créer une track
-  createTrack: (data: CreateTrackRequest) =>
+  createTrack: (data: CreateTrackRequest, token?: string | null) =>
     apiMutation<CreateTrackRequest, TrackDetailDto>(
       "/tracks",
       "POST",
       data,
       {
         revalidate: ["/tracks"],
+        token,
       }
     ),
   
   // PUT - Mettre à jour une track
-  updateTrack: (id: string, data: UpdateTrackRequest) =>
+  updateTrack: (id: string, data: UpdateTrackRequest, token?: string | null) =>
     apiMutation<UpdateTrackRequest, TrackDetailDto>(
       `/tracks/${id}`,
       "PUT",
       data,
       {
         revalidate: [`/tracks/${id}`, "/tracks"],
+        token,
       }
     ),
   
   // DELETE - Supprimer une track
-  deleteTrack: (id: string) =>
+  deleteTrack: (id: string, token?: string | null) =>
     apiMutation<undefined, void>(
       `/tracks/${id}`,
       "DELETE",
       undefined,
       {
         revalidate: ["/tracks"],
+        token,
       }
     ),
 }

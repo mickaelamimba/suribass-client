@@ -1,3 +1,4 @@
+import { useAuth } from "@/features/auth/providers/auth-provider"
 import { ApiError } from "@/lib/fetcher"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -8,13 +9,14 @@ export const useCreateTrack = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
+  const { accessToken } = useAuth()
 
   const create = async (data: CreateTrackRequest) => {
     setIsLoading(true)
     setError(null)
 
     try {
-      const result = await tracksApi.createTrack(data)
+      const result = await tracksApi.createTrack(data, accessToken)
       router.push(`/tracks/${result.id}`)
       return result
     } catch (err) {

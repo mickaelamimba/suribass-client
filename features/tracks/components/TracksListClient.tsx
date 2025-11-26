@@ -20,7 +20,7 @@ export function TracksListClient() {
     pageSize: 20,
     ...filters,
   })
-  
+  console.log(tracks)
   const { user } = useAuth()
   const canCreate = user && (user.role === "Partner" || user.role === "Admin")
 

@@ -1,16 +1,28 @@
+import { useAuthenticatedFetcher } from "@/lib/use-authenticated-fetcher"
 import useSWR from "swr"
-import { securityApi } from "../api/security.api"
 import type {
-    GetFailedLoginsParams,
-    PaginatedFailedLoginsResponse
+  GetFailedLoginsParams,
+  PaginatedFailedLoginsResponse
 } from "../api/security.types"
 
 export const useFailedLogins = (params: GetFailedLoginsParams = {}) => {
-  const key = `/admin/security/failed-logins?${JSON.stringify(params)}`
+  const authenticatedFetcher = useAuthenticatedFetcher()
+  
+  const queryString = new URLSearchParams(
+    Object.entries(params).reduce((acc, [key, value]) => {
+      if (value !== undefined && value !== null) {
+        acc[key] = value.toString()
+      }
+      return acc
+    }, {} as Record<string, string>)
+  ).toString()
+  
+  const key = `/admin/security/failed-logins?${queryString}`
   
   const { data, error, isLoading, mutate } = useSWR<PaginatedFailedLoginsResponse | null>(
     key,
-    () => securityApi.getFailedLogins(params)
+    () => authenticatedFetcher(key),
+    {}
   )
 
   return {

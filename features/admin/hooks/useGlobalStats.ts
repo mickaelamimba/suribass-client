@@ -1,11 +1,13 @@
+import { useAuthenticatedFetcher } from "@/lib/use-authenticated-fetcher"
 import useSWR from "swr"
-import { adminApi } from "../api/admin.api"
 import type { GlobalStatsDto } from "../api/admin.types"
 
 export const useGlobalStats = () => {
+  const authenticatedFetcher = useAuthenticatedFetcher()
+  
   const { data, error, isLoading, mutate } = useSWR<GlobalStatsDto | null>(
     "/admin/stats",
-    adminApi.getGlobalStats,
+    authenticatedFetcher,
     {
       revalidateOnFocus: false,
       refreshInterval: 60000, // Refresh toutes les minutes

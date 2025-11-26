@@ -1,11 +1,14 @@
+import { useAuthenticatedFetcher } from "@/lib/use-authenticated-fetcher"
 import useSWR from "swr"
-import { tracksApi } from "../api/tracks.api"
 import type { TrackDetailDto } from "../api/tracks.types"
 
 export const useTrackById = (id: string) => {
+  const authenticatedFetcher = useAuthenticatedFetcher()
+  const key = id ? `/tracks/${id}` : null
+  
   const { data, error, isLoading, mutate } = useSWR<TrackDetailDto>(
-    id ? `/tracks/${id}` : null,
-    () => tracksApi.getTrackById(id),
+    key,
+    authenticatedFetcher,
     {
       revalidateOnFocus: false,
     }

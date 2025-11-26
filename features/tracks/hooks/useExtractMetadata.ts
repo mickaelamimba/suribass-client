@@ -1,3 +1,4 @@
+import { useAuth } from "@/features/auth/providers/auth-provider"
 import { ApiError } from "@/lib/fetcher"
 import { useState } from "react"
 import { tracksApi } from "../api/tracks.api"
@@ -7,13 +8,15 @@ export const useExtractMetadata = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [metadata, setMetadata] = useState<ExtractedMetadata | null>(null)
+  const { accessToken } = useAuth()
 
   const extract = async (data: ExtractMetadataRequest) => {
     setIsLoading(true)
     setError(null)
 
     try {
-      const result = await tracksApi.extractMetadata(data)
+      const result = await tracksApi.extractMetadata(data, accessToken)
+      console.log('🎵 Metadata extracted:', result)
       setMetadata(result)
       return result
     } catch (err) {

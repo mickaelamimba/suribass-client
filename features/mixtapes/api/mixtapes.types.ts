@@ -69,7 +69,8 @@ export interface MixtapeDetailDto extends MixtapeDto {
 }
 
 export interface SyncSoundCloudRequest {
-  tags?: string[]
+  tags?: string              // Tags séparés par des virgules
+  defaultCategoryId?: string // UUID de la catégorie par défaut
 }
 
 export interface SyncResultDto {
