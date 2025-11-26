@@ -36,7 +36,7 @@ export function AppSidebar({ className }: { className?: string }) {
   const mainNav: NavItem[] = [
     {
       title: "Accueil",
-      href: "/",
+      href: "/home",
       icon: Home,
     },
     {
