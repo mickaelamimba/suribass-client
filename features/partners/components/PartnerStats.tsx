@@ -4,11 +4,12 @@ import { Heart, MessageCircle, Play, Share2, Star } from "lucide-react"
 interface PartnerStatsProps {
   stats: {
     totalTracks: number
+    totalCollaborations: number
     totalViews: number
     totalLikes: number
     totalComments: number
-    totalShares: number
-    averageScore: number | null
+    averageScore: number
+    tracksThisMonth: number
   }
 }
 
@@ -43,8 +44,8 @@ export function PartnerStats({ stats }: PartnerStatsProps) {
           />
           <StatItem
             icon={Share2}
-            label="Partages"
-            value={stats.totalShares}
+            label="Collaborations"
+            value={stats.totalCollaborations}
           />
           <StatItem
             icon={Star}

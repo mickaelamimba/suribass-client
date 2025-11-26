@@ -14,9 +14,9 @@ export const useRegisterPartner = () => {
     setError(null)
 
     try {
-      const result = await partnersApi.registerPartner(data)
-      router.push(`/partners/${result.id}`)
-      return result
+      const partnerId = await partnersApi.registerPartner(data)
+      router.push(`/partners/${partnerId}`)
+      return partnerId
     } catch (err) {
       if (err instanceof ApiError) {
         setError(err.errors[0] || "Une erreur est survenue")

@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { Music, Users } from "lucide-react"
+import { Music } from "lucide-react"
 import Link from "next/link"
 import type { PartnerDto } from "../api/partners.types"
 
@@ -34,14 +34,10 @@ export function PartnerCard({ partner }: PartnerCardProps) {
         </div>
       </CardHeader>
       
-      <CardContent className="grid grid-cols-2 gap-4 p-6 pt-0">
+      <CardContent className="p-6 pt-0">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Music className="h-4 w-4" />
           <span>{partner.trackCount} tracks</span>
-        </div>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Users className="h-4 w-4" />
-          <span>{partner.totalViews} vues</span>
         </div>
       </CardContent>
 

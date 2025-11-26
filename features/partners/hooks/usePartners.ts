@@ -1,6 +1,6 @@
 import { useAuthenticatedFetcher } from "@/lib/use-authenticated-fetcher"
 import useSWR from "swr"
-import type { GetPartnersParams, PaginatedPartnersResponse } from "../api/partners.types"
+import type { GetPartnersParams, PartnersListResponse } from "../api/partners.types"
 
 export const usePartners = (params: GetPartnersParams = {}) => {
   const authenticatedFetcher = useAuthenticatedFetcher()
@@ -16,7 +16,7 @@ export const usePartners = (params: GetPartnersParams = {}) => {
   
   const key = `/partners?${queryString}`
   
-  const { data, error, isLoading, mutate } = useSWR<PaginatedPartnersResponse>(
+  const { data, error, isLoading, mutate } = useSWR<PartnersListResponse>(
     key,
     () => authenticatedFetcher(key),
     {

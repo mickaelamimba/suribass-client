@@ -4,7 +4,6 @@ import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import { Calendar } from "lucide-react"
 import type { PartnerDetailDto } from "../api/partners.types"
-import { PartnerStats } from "./PartnerStats"
 
 interface PartnerProfileProps {
   partner: PartnerDetailDto
@@ -35,11 +34,13 @@ export function PartnerProfile({ partner }: PartnerProfileProps) {
               </h1>
               <Badge variant="secondary" className="h-fit">Partenaire</Badge>
             </div>
-            
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Calendar className="h-4 w-4" />
-              <span>Membre depuis {format(new Date(partner.joinedAt), "MMMM yyyy", { locale: fr })}</span>
-            </div>
+
+            {partner.joinedAt && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Calendar className="h-4 w-4" />
+                <span>Membre depuis {format(new Date(partner.joinedAt), "MMMM yyyy", { locale: fr })}</span>
+              </div>
+            )}
           </div>
 
           <p className="max-w-2xl text-muted-foreground">
@@ -49,16 +50,12 @@ export function PartnerProfile({ partner }: PartnerProfileProps) {
       </div>
 
       {/* Stats */}
-      <PartnerStats
-        stats={{
-          totalTracks: partner.trackCount,
-          totalViews: partner.totalViews,
-          totalLikes: partner.totalLikes,
-          totalComments: partner.totalComments,
-          totalShares: partner.totalShares,
-          averageScore: partner.averageScore,
-        }}
-      />
+      <div className="flex gap-4">
+        <div className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
+          <div className="text-2xl font-bold">{partner.trackCount}</div>
+          <div className="text-xs text-muted-foreground">Tracks publiées</div>
+        </div>
+      </div>
     </div>
   )
 }

@@ -2,14 +2,13 @@ import { apiMutation } from "@/lib/api-helpers"
 import { fetcher } from "@/lib/fetcher"
 import type {
     AddCollaborationRequest,
-    CollaborationDto,
     GetPartnersParams,
     GetPartnerTracksParams,
-    PaginatedPartnersResponse,
     PaginatedTracksResponse,
     PartnerCollaborationsResponse,
     PartnerDashboardDto,
     PartnerDetailDto,
+    PartnersListResponse,
     RegisterPartnerRequest,
     UpdatePartnerRequest,
 } from "./partners.types"
@@ -26,7 +25,7 @@ export const partnersApi = {
       }, {} as Record<string, string>)
     ).toString()
     
-    return fetcher<PaginatedPartnersResponse>(
+    return fetcher<PartnersListResponse>(
       `/partners?${queryString}`
     )
   },
@@ -57,7 +56,7 @@ export const partnersApi = {
   
   // POST - Devenir partenaire
   registerPartner: (data: RegisterPartnerRequest) =>
-    apiMutation<RegisterPartnerRequest, PartnerDetailDto>(
+    apiMutation<RegisterPartnerRequest, string>(
       "/partners/register",
       "POST",
       data,
@@ -79,7 +78,7 @@ export const partnersApi = {
   
   // POST - Ajouter une collaboration
   addCollaboration: (data: AddCollaborationRequest) =>
-    apiMutation<AddCollaborationRequest, CollaborationDto>(
+    apiMutation<AddCollaborationRequest, string>(
       "/partners/collaborations",
       "POST",
       data,

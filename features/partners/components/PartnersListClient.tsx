@@ -46,7 +46,7 @@ export function PartnersListClient() {
         </Button>
       </div>
 
-      <PartnerGrid partners={partners?.items} isLoading={isLoading} />
+      <PartnerGrid partners={partners} isLoading={isLoading} />
     </div>
   )
 }
