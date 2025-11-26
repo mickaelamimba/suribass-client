@@ -2,10 +2,10 @@ import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
 
 // Routes publiques accessibles sans authentification
-const publicRoutes = ["/login", "/register", "/"]
+const publicRoutes = ["/login", "/register", "/home", "/"]
 
 // Routes qui nécessitent l'authentification
-const protectedRoutes = ["/dashboard"]
+const protectedRoutes = ["/admin"]
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -25,13 +25,13 @@ export async function proxy(request: NextRequest) {
 
   // Si l'utilisateur est authentifié et essaie d'accéder à /login ou /register
   if (isAuthenticated && (pathname === "/login" || pathname === "/register")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url))
+    return NextResponse.redirect(new URL("/home", request.url))
   }
 
   // Rediriger la racine vers /login si non authentifié, sinon vers /dashboard
   if (pathname === "/") {
     if (isAuthenticated) {
-      return NextResponse.redirect(new URL("/dashboard", request.url))
+      return NextResponse.redirect(new URL("/admin", request.url))
     } else {
       return NextResponse.redirect(new URL("/login", request.url))
     }

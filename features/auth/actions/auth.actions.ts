@@ -3,7 +3,7 @@
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api"
+const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3001/api"
 
 // Configuration des cookies
 const COOKIE_OPTIONS = {
@@ -224,7 +224,10 @@ export async function getCurrentUser() {
       return null
     }
 
-    return await response.json()
+    const responseData = await response.json()
+    
+    // Extraire les données depuis data.data (format backend C#)
+    return responseData.data || responseData
   } catch (error) {
     return null
   }

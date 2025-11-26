@@ -1,7 +1,7 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL|| "http://localhost:3000"
 
-interface FetcherOptions extends RequestInit {
-  token?: string
+export interface FetcherOptions extends RequestInit {
+  token?: string | null
 }
 
 export class ApiError extends Error {
@@ -20,7 +20,9 @@ export async function fetcher<T>(
   options: FetcherOptions = {}
 ): Promise<T> {
   const { token, ...fetchOptions } = options
-
+  
+  const fullUrl = `${API_BASE_URL}${url}`
+  
   const headers = new Headers(fetchOptions.headers)
   
   if (!headers.has("Content-Type")) {
@@ -33,7 +35,7 @@ export async function fetcher<T>(
     headers.set("Authorization", `Bearer ${token}`)
   }
 
-  const response = await fetch(`${API_BASE_URL}${url}`, {
+  const response = await fetch(fullUrl, {
     ...fetchOptions,
     headers,
     credentials: "include", // Important pour envoyer les cookies
@@ -47,6 +49,15 @@ export async function fetcher<T>(
     )
   }
 
-  return response.json()
+  const responseData = await response.json()
+  
+  // Si le backend renvoie une structure envelope { success, data, errors, message }
+  // extraire uniquement data
+  if (responseData && typeof responseData === 'object' && 'data' in responseData && 'success' in responseData) {
+    return responseData.data
+  }
+  
+  // Sinon retourner la réponse telle quelle
+  return responseData
 }
-export const swrFetcher = (url: string) => fetcher(url)
+export const swrFetcher = (url: string, options?: FetcherOptions) => fetcher(url, options)
