@@ -2,30 +2,31 @@
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/features/auth"
+import { CommentSection } from "@/features/comments/components"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import {
-  AlertTriangle,
-  ArrowLeft,
-  Calendar,
-  Heart,
-  Pencil,
-  Share2,
-  Star,
-  Trash2
+    AlertTriangle,
+    ArrowLeft,
+    Calendar,
+    Heart,
+    Pencil,
+    Share2,
+    Star,
+    Trash2
 } from "lucide-react"
 import Link from "next/link"
 import { useDeleteTrack } from "../hooks/useDeleteTrack"
@@ -88,7 +89,7 @@ export function TrackDetailClient({ id }: TrackDetailClientProps) {
         <div className="lg:col-span-2 space-y-8">
           <TrackPlayer 
             embedUrl={track.embedUrl} 
-            platform={track.platform} 
+            platform={platformNames[track.platform] as 'SoundCloud' | 'YouTube' | 'Spotify'} 
             title={track.title} 
           />
 
@@ -191,9 +192,7 @@ export function TrackDetailClient({ id }: TrackDetailClientProps) {
           )}
 
           {/* Placeholder for comments or related tracks */}
-          <div className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">
-            Espace commentaires à venir...
-          </div>
+          <CommentSection trackId={track.id} />
         </div>
       </div>
     </div>

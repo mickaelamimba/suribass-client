@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { CommentSection } from "@/features/comments/components"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import { Calendar, Heart, Share2, User } from "lucide-react"
@@ -78,9 +79,7 @@ export function MixtapeDetailView({ mixtape }: MixtapeDetailViewProps) {
           <Separator />
 
           {/* Comments Section Placeholder */}
-          <div className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">
-            Section commentaires à intégrer
-          </div>
+          <CommentSection mixtapeId={mixtape.id} />
         </div>
 
         {/* Sidebar */}
