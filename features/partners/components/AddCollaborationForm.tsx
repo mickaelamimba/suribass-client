@@ -35,7 +35,7 @@ export function AddCollaborationForm({ partnerId, onSuccess }: AddCollaborationF
   
   // Fetch potential collaborators (all partners except me)
   const { partners } = usePartners({ pageSize: 100 })
-  const collaborators = partners?.items.filter(p => p.id !== partnerId) || []
+  const collaborators = partners?.filter(p => p.id !== partnerId) || []
 
   const form = useForm({
     defaultValues: {

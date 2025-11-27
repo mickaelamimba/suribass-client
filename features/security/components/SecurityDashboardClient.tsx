@@ -35,10 +35,12 @@ export function SecurityDashboardClient() {
   }
 
   // Calculate derived state
-  const threatLevel = dashboard?.summary.failedLogins > 10 || dashboard?.summary.injectionAttempts > 0 
-    ? "High" 
-    : dashboard?.summary.failedLogins > 5 
-      ? "Medium" 
+  const threatLevel = dashboard?.summary.injectionAttempts > 5 || dashboard?.summary.failedLogins > 20
+    ? "Critical"
+    : dashboard?.summary.failedLogins > 10 || dashboard?.summary.injectionAttempts > 0
+    ? "High"
+    : dashboard?.summary.failedLogins > 5
+      ? "Medium"
       : "Low"
       
   const activeAlerts = (dashboard?.summary.suspiciousActivities || 0) + (dashboard?.summary.injectionAttempts || 0)

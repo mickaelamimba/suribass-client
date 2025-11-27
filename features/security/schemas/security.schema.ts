@@ -17,7 +17,6 @@ export const blockIPSchema = z.object({
     .int()
     .min(1, "La durée doit être d'au moins 1 heure")
     .max(8760, "La durée ne peut pas dépasser 1 an (8760 heures)")
-    .optional()
     .nullable(),
 })
 

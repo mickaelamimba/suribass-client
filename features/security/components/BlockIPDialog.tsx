@@ -147,9 +147,9 @@ export function BlockIPDialog({ onSuccess }: BlockIPDialogProps) {
                   id={field.name}
                   name={field.name}
                   type="number"
-                  value={field.state.value}
+                  value={field.state.value ?? ""}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value ? parseInt(e.target.value) : 0)}
+                  onChange={(e) => field.handleChange(e.target.value ? parseInt(e.target.value) : null)}
                 />
                 <FieldError errors={field.state.meta.errors} />
               </FieldGroup>
