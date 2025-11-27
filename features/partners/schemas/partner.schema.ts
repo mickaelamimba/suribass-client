@@ -11,9 +11,7 @@ export const registerPartnerSchema = z.object({
     ),
   bio: z
     .string()
-    .max(1000, "La bio ne peut pas dépasser 1000 caractères")
-    .optional()
-    .nullable(),
+    .max(1000, "La bio ne peut pas dépasser 1000 caractères"),
 })
 
 export type RegisterPartnerFormData = z.infer<typeof registerPartnerSchema>
@@ -26,18 +24,14 @@ export const updatePartnerSchema = z.object({
     .regex(
       /^[a-zA-Z0-9\s\-_'.]+$/,
       "Le nom d'artiste ne peut contenir que des lettres, chiffres, espaces et - _ ' ."
-    )
-    .optional(),
+    ),
   bio: z
     .string()
-    .max(1000, "La bio ne peut pas dépasser 1000 caractères")
-    .optional()
-    .nullable(),
+    .max(1000, "La bio ne peut pas dépasser 1000 caractères"),
   avatarUrl: z
     .string()
     .url("URL invalide")
-    .optional()
-    .nullable(),
+    .or(z.literal("")),
 })
 
 export type UpdatePartnerFormData = z.infer<typeof updatePartnerSchema>

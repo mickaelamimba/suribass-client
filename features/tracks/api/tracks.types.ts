@@ -28,7 +28,9 @@ export interface TrackDto {
 }
 
 export interface TrackDetailDto extends TrackDto {
-  // Pas de champs additionnels pour l'instant
+  partnerId: string
+  categoryId: string | null
+  playlistInfo: string | null
 }
 
 // Wrapper de réponse API standard

@@ -28,7 +28,7 @@ export function ExtractMetadataPreview({ metadata }: ExtractMetadataPreviewProps
           <div className="flex items-center gap-2">
             <Badge variant="secondary">{metadata.platform}</Badge>
             <span className="text-xs text-muted-foreground">
-              {Math.floor(metadata.duration / 60)}:{(metadata.duration % 60).toString().padStart(2, '0')}
+              {metadata.duration}
             </span>
           </div>
           <h4 className="font-semibold line-clamp-1">{metadata.title}</h4>
