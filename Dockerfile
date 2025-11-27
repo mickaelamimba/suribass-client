@@ -6,7 +6,7 @@ FROM base AS deps
 WORKDIR /app
 
 # Copier les fichiers de dépendances
-COPY package.json bun.lockb ./
+COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
 # Stage 2: Builder
