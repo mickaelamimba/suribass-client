@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  # En production, on utilise la page de maintenance
+  maintenance:
+    ports:
+      - "3000:80"  # Override pour exposer la maintenance sur le port 3000
+    deploy:
+      replicas: 2
+
+  # L'application est désactivée en mode maintenance
+  suribass-client:
+    deploy:
+      replicas: 0  # Aucune instance de l'app en mode maintenance
