@@ -11,15 +11,14 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { CategorySelect } from "@/features/categories/components/CategorySelect"
-import { Search } from "lucide-react"
-import type { TrackFiltersData } from "../schemas/track.schema"
+import { Search, X } from "lucide-react"
+import { useTrackFilters } from "../hooks/useTrackFilters"
 
-interface TrackFiltersProps {
-  filters: TrackFiltersData
-  onFiltersChange: (filters: TrackFiltersData) => void
-}
+export function TrackFilters() {
+  const { filters, updateFilters, clearFilters } = useTrackFilters()
 
-export function TrackFilters({ filters, onFiltersChange }: TrackFiltersProps) {
+  const hasFilters = filters.search || filters.categoryId || filters.sortBy !== "recent"
+
   return (
     <div className="flex flex-col gap-4 rounded-lg border bg-card p-4 md:flex-row md:items-end">
       <div className="flex-1 space-y-2">
@@ -29,7 +28,7 @@ export function TrackFilters({ filters, onFiltersChange }: TrackFiltersProps) {
           <Input
             placeholder="Titre, description..."
             value={filters.search || ""}
-            onChange={(e) => onFiltersChange({ ...filters, search: e.target.value })}
+            onChange={(e) => updateFilters({ search: e.target.value })}
             className="pl-8"
           />
         </div>
@@ -38,16 +37,16 @@ export function TrackFilters({ filters, onFiltersChange }: TrackFiltersProps) {
       <div className="w-full space-y-2 md:w-48">
         <Label>Catégorie</Label>
         <CategorySelect
-          value={filters.categoryId}
-          onValueChange={(value) => onFiltersChange({ ...filters, categoryId: value })}
+          value={filters.categoryId || undefined}
+          onValueChange={(value) => updateFilters({ categoryId: value })}
         />
       </div>
 
       <div className="w-full space-y-2 md:w-48">
         <Label>Trier par</Label>
         <Select
-          value={filters.sortBy || "recent"}
-          onValueChange={(value: any) => onFiltersChange({ ...filters, sortBy: value })}
+          value={filters.sortBy}
+          onValueChange={(value: "recent" | "popular" | "score") => updateFilters({ sortBy: value })}
         >
           <SelectTrigger>
             <SelectValue />
@@ -60,13 +59,14 @@ export function TrackFilters({ filters, onFiltersChange }: TrackFiltersProps) {
         </Select>
       </div>
       
-      {filters.categoryId && (
+      {hasFilters && (
         <Button 
           variant="ghost" 
-          onClick={() => onFiltersChange({ ...filters, categoryId: undefined })}
+          onClick={clearFilters}
           className="mb-0.5"
         >
-          Effacer filtres
+          <X className="mr-2 h-4 w-4" />
+          Effacer
         </Button>
       )}
     </div>

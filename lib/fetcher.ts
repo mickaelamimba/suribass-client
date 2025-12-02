@@ -1,4 +1,8 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL|| "http://localhost:3000"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:5042"
+
+// Vérifier si l'URL de base contient déjà le préfixe API
+const baseHasPrefix = API_BASE_URL.includes("/api/v1")
+const API_PREFIX = baseHasPrefix ? "" : "/api/v1"
 
 export interface FetcherOptions extends RequestInit {
   token?: string | null
@@ -21,7 +25,10 @@ export async function fetcher<T>(
 ): Promise<T> {
   const { token, ...fetchOptions } = options
   
-  const fullUrl = `${API_BASE_URL}${url}`
+  // Ajouter le préfixe API si nécessaire (ni dans l'URL, ni dans la base)
+  const needsPrefix = !baseHasPrefix && !url.startsWith("/api/v1")
+  const apiUrl = needsPrefix ? `${API_PREFIX}${url}` : url
+  const fullUrl = `${API_BASE_URL}${apiUrl}`
   
   const headers = new Headers(fetchOptions.headers)
   

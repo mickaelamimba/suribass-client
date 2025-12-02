@@ -42,8 +42,12 @@ export interface UserProfile {
   email: string
   username: string
   role: UserRole
-  createdAt: string // ISO 8601 format (DateTime C#)
-  partner: PartnerDto | null
+  createdAt?: string // ISO 8601 format (DateTime C#) - optionnel car pas toujours retourné
+  // L'API /users/me retourne ces champs
+  partnerId: string | null
+  isPartner: boolean
+  // Certains endpoints peuvent retourner l'objet partner complet
+  partner?: PartnerDto | null
 }
 
 /**

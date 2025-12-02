@@ -20,8 +20,12 @@ export interface TrackDto {
   viewCount: number
   likeCount: number
   
-  // Score IA
-  score: number | null
+  // Score IA - peut être un objet ou null
+  score: {
+    score: number
+    recommendationMessage: string | null
+    calculatedAt: string
+  } | null
   
   // Dates
   createdAt: string            // ISO 8601

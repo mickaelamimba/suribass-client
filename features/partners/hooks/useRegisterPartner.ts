@@ -1,3 +1,4 @@
+import { useAuth } from "@/features/auth"
 import { ApiError } from "@/lib/fetcher"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -5,6 +6,7 @@ import { partnersApi } from "../api/partners.api"
 import type { RegisterPartnerRequest } from "../api/partners.types"
 
 export const useRegisterPartner = () => {
+  const { accessToken } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -14,7 +16,7 @@ export const useRegisterPartner = () => {
     setError(null)
 
     try {
-      const partnerId = await partnersApi.registerPartner(data)
+      const partnerId = await partnersApi.registerPartner(data, accessToken)
       router.push(`/partners/${partnerId}`)
       return partnerId
     } catch (err) {

@@ -6,6 +6,7 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
+    CommandSeparator,
 } from "@/components/ui/command"
 import {
     Popover,
@@ -13,20 +14,22 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
-import { Check, ChevronsUpDown } from "lucide-react"
+import { Check, ChevronsUpDown, X } from "lucide-react"
 import * as React from "react"
 import { useCategories } from "../hooks/useCategories"
 
 interface CategorySelectProps {
   value: string | undefined
-  onValueChange: (value: string) => void
+  onValueChange: (value: string | undefined) => void
   placeholder?: string
+  allowClear?: boolean
 }
 
 export function CategorySelect({
   value,
   onValueChange,
   placeholder = "Sélectionner une catégorie...",
+  allowClear = true,
 }: CategorySelectProps) {
   const [open, setOpen] = React.useState(false)
   const { categories, isLoading } = useCategories()
@@ -43,17 +46,34 @@ export function CategorySelect({
           className="w-full justify-between"
           disabled={isLoading}
         >
-          {value
-            ? selectedCategory?.name
-            : placeholder}
+          <span className="truncate">
+            {value ? selectedCategory?.name : placeholder}
+          </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
+      <PopoverContent className="w-[200px] p-0">
         <Command>
           <CommandInput placeholder="Rechercher une catégorie..." />
           <CommandList>
             <CommandEmpty>Aucune catégorie trouvée.</CommandEmpty>
+            {allowClear && value && (
+              <>
+                <CommandGroup>
+                  <CommandItem
+                    onSelect={() => {
+                      onValueChange(undefined)
+                      setOpen(false)
+                    }}
+                    className="text-muted-foreground"
+                  >
+                    <X className="mr-2 h-4 w-4" />
+                    Toutes les catégories
+                  </CommandItem>
+                </CommandGroup>
+                <CommandSeparator />
+              </>
+            )}
             <CommandGroup>
               {categories.map((category) => (
                 <CommandItem

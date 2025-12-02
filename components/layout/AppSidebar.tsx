@@ -24,6 +24,7 @@ import {
     LayoutDashboard,
     Library,
     LogOut,
+    Mail,
     Music2,
     Settings,
     Sparkles,
@@ -75,24 +76,29 @@ export function AppSidebar({ className }: { className?: string }) {
       href: "/partners",
       icon: Users,
     },
+    {
+      title: "Contact",
+      href: "/contact",
+      icon: Mail,
+    },
   ]
 
   const partnerNav: NavItem[] = [
     {
       title: "Tableau de bord",
-      href: "/dashboard",
+      href: "/partners/dashboard",
       icon: LayoutDashboard,
       roles: ["Partner", "Admin"],
     },
     {
       title: "Mes Tracks",
-      href: "/dashboard/tracks",
+      href: "/partners/dashboard/tracks",
       icon: Music2,
       roles: ["Partner", "Admin"],
     },
     {
       title: "Statistiques",
-      href: "/dashboard/stats",
+      href: "/partners/dashboard/stats",
       icon: BarChart3,
       roles: ["Partner", "Admin"],
     },

@@ -55,35 +55,38 @@ export const partnersApi = {
   },
   
   // POST - Devenir partenaire
-  registerPartner: (data: RegisterPartnerRequest) =>
+  registerPartner: (data: RegisterPartnerRequest, token?: string | null) =>
     apiMutation<RegisterPartnerRequest, string>(
       "/partners/register",
       "POST",
       data,
       {
         revalidate: ["/users/me"], // Refresh user pour voir le nouveau rôle
+        token,
       }
     ),
   
   // PUT - Mettre à jour le profil
-  updatePartner: (id: string, data: UpdatePartnerRequest) =>
+  updatePartner: (id: string, data: UpdatePartnerRequest, token?: string | null) =>
     apiMutation<UpdatePartnerRequest, PartnerDetailDto>(
       `/partners/${id}`,
       "PUT",
       data,
       {
         revalidate: [`/partners/${id}`, `/partners/${id}/dashboard`],
+        token,
       }
     ),
   
   // POST - Ajouter une collaboration
-  addCollaboration: (data: AddCollaborationRequest) =>
+  addCollaboration: (data: AddCollaborationRequest, token?: string | null) =>
     apiMutation<AddCollaborationRequest, string>(
       "/partners/collaborations",
       "POST",
       data,
       {
         revalidate: [`/partners/${data.collaboratorPartnerId}/collaborations`],
+        token,
       }
     ),
   

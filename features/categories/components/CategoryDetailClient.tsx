@@ -3,6 +3,10 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { MixtapeGrid } from "@/features/mixtapes/components/MixtapeGrid"
+import { useMixtapes } from "@/features/mixtapes/hooks/useMixtapes"
+import { TrackGrid } from "@/features/tracks/components/TrackGrid"
+import { useTracks } from "@/features/tracks/hooks/useTracks"
 import { AlertTriangle, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { useCategoryBySlug } from "../hooks/useCategoryBySlug"
@@ -13,6 +17,14 @@ interface CategoryDetailClientProps {
 
 export function CategoryDetailClient({ slug }: CategoryDetailClientProps) {
   const { category, isLoading, isError } = useCategoryBySlug(slug)
+  
+  // Récupérer les tracks et mixtapes de cette catégorie
+  const { tracks, isLoading: isLoadingTracks } = useTracks(
+    category?.id ? { categoryId: category.id } : {}
+  )
+  const { mixtapes, isLoading: isLoadingMixtapes } = useMixtapes(
+    category?.id ? { categoryId: category.id } : {}
+  )
 
   if (isLoading) {
     return (
@@ -68,15 +80,17 @@ export function CategoryDetailClient({ slug }: CategoryDetailClientProps) {
         </TabsList>
 
         <TabsContent value="tracks">
-          <div className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">
-            Liste des tracks à venir...
-          </div>
+          <TrackGrid 
+            tracks={tracks?.items} 
+            isLoading={isLoadingTracks || !category.id} 
+          />
         </TabsContent>
 
         <TabsContent value="mixtapes">
-          <div className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">
-            Liste des mixtapes à venir...
-          </div>
+          <MixtapeGrid 
+            mixtapes={mixtapes?.items} 
+            isLoading={isLoadingMixtapes || !category.id} 
+          />
         </TabsContent>
       </Tabs>
     </div>

@@ -136,6 +136,68 @@ export async function registerAction(
   }
 }
 
+export async function googleAuthAction(idToken: string) {
+  try {
+    console.log("🔐 Google auth attempt")
+    
+    const response = await fetch(`${API_BASE_URL}/auth/google`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ idToken }),
+    })
+
+    console.log("📡 Google Auth API Response status:", response.status)
+
+    if (!response.ok) {
+      const error = await response.json()
+      console.error("❌ Google auth failed:", error)
+      return {
+        success: false,
+        error: error.errors?.[0] || error.message || "Erreur de connexion Google",
+      }
+    }
+
+    const response_data = await response.json()
+    
+    // Extraire les tokens depuis data.data (format de votre backend C#)
+    const tokens = response_data.data || response_data
+    
+    console.log("✅ Google auth successful, received tokens:", {
+      hasAccessToken: !!tokens.accessToken,
+      hasRefreshToken: !!tokens.refreshToken,
+      expiresAt: tokens.expiresAt
+    })
+
+    // Stocker les tokens dans des cookies httpOnly
+    const cookieStore = await cookies()
+    
+    cookieStore.set("accessToken", tokens.accessToken, {
+      ...COOKIE_OPTIONS,
+      maxAge: ACCESS_TOKEN_MAX_AGE,
+    })
+    
+    cookieStore.set("refreshToken", tokens.refreshToken, {
+      ...COOKIE_OPTIONS,
+      maxAge: REFRESH_TOKEN_MAX_AGE,
+    })
+    
+    cookieStore.set("expiresAt", tokens.expiresAt, {
+      ...COOKIE_OPTIONS,
+      maxAge: REFRESH_TOKEN_MAX_AGE,
+    })
+
+    return { success: true }
+  } catch (error: any) {
+    console.error("💥 Google auth error:", error)
+    return {
+      success: false,
+      error: error.message || "Une erreur est survenue",
+    }
+  }
+}
+
 export async function logoutAction() {
   const cookieStore = await cookies()
   cookieStore.delete("accessToken")
