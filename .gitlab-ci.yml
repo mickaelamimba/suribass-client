@@ -53,6 +53,7 @@ deploy_production:
     - docker compose --env-file .env up -d frontend
     - docker image prune -af
     - echo "🚀 Frontend déployé en production"
+    
 
   environment:
     name: production
