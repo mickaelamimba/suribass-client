@@ -2,7 +2,7 @@
 
 import { useSession } from "@/lib/auth-client"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 interface AuthGuardProps {
   children: React.ReactNode
@@ -13,15 +13,20 @@ interface AuthGuardProps {
 export function AuthGuard({ children, roles, redirectTo = "/" }: AuthGuardProps) {
   const { user, isLoading, isAuthenticated } = useSession()
   const router = useRouter()
+  const [hasChecked, setHasChecked] = useState(false)
 
-  // Redirect si non authentifié
+  // Attendre que le chargement soit terminé avant de rediriger
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push("/login")
+    if (!isLoading) {
+      setHasChecked(true)
+      if (!isAuthenticated) {
+        router.push("/login")
+      }
     }
   }, [isLoading, isAuthenticated, router])
 
-  if (isLoading) {
+  // Afficher le loader pendant le chargement initial
+  if (isLoading || !hasChecked) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />

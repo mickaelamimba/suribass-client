@@ -141,7 +141,7 @@ export function AdminSidebar() {
               <button className="group flex w-full items-center gap-3 rounded-lg p-2 transition-colors hover:bg-accent">
                 <Avatar className="h-10 w-10 border-2 border-destructive/20 transition-all group-hover:border-destructive/40">
                   <AvatarImage src={user.partner?.avatarUrl || undefined} />
-                  <AvatarFallback className="bg-gradient-to-br from-destructive to-destructive/60 text-destructive-foreground">
+                  <AvatarFallback className="bg-linear-to-br from-destructive to-destructive/60 text-destructive-foreground">
                     {user.username[0].toUpperCase()}
                   </AvatarFallback>
                 </Avatar>

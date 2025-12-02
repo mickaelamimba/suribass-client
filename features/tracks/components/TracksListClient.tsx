@@ -4,23 +4,20 @@ import { Button } from "@/components/ui/button"
 import { useAuth } from "@/features/auth"
 import { Plus } from "lucide-react"
 import Link from "next/link"
-import { useState } from "react"
+import { useTrackFilters } from "../hooks/useTrackFilters"
 import { useTracks } from "../hooks/useTracks"
-import type { TrackFiltersData } from "../schemas/track.schema"
 import { TrackFilters } from "./TrackFilters"
 import { TrackGrid } from "./TrackGrid"
 
 export function TracksListClient() {
-  const [filters, setFilters] = useState<TrackFiltersData>({
-    sortBy: "recent",
-  })
+  const { apiFilters } = useTrackFilters()
   
   const { tracks, isLoading } = useTracks({
     pageIndex: 1,
     pageSize: 20,
-    ...filters,
+    ...apiFilters,
   })
-  console.log(tracks)
+
   const { user } = useAuth()
   const canCreate = user && (user.role === "Partner" || user.role === "Admin")
 
@@ -45,7 +42,7 @@ export function TracksListClient() {
       </div>
 
       <div className="mb-8">
-        <TrackFilters filters={filters} onFiltersChange={setFilters} />
+        <TrackFilters />
       </div>
 
       <TrackGrid tracks={tracks?.items} isLoading={isLoading} />

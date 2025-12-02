@@ -1,10 +1,10 @@
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { CommentSection } from "@/features/comments/components"
+import { EngagementBar } from "@/features/engagement"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
-import { Calendar, Heart, Share2, User } from "lucide-react"
+import { Calendar, User } from "lucide-react"
 import type { MixtapeDetailDto } from "../api/mixtapes.types"
 import { MixtapePlayer } from "./MixtapePlayer"
 import { MixtapeStats } from "./MixtapeStats"
@@ -17,7 +17,11 @@ export function MixtapeDetailView({ mixtape }: MixtapeDetailViewProps) {
   return (
     <div className="flex flex-col gap-8">
       {/* Player Section */}
-      <MixtapePlayer embedUrl={mixtape.embedUrl} title={mixtape.title} />
+      <MixtapePlayer 
+        embedUrl={mixtape.embedUrl} 
+        title={mixtape.title}
+        thumbnailUrl={mixtape.thumbnailUrl}
+      />
 
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Main Content */}
@@ -44,14 +48,11 @@ export function MixtapeDetailView({ mixtape }: MixtapeDetailViewProps) {
                 </div>
               </div>
               
-              <div className="flex gap-2">
-                <Button variant="outline" size="icon">
-                  <Heart className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="icon">
-                  <Share2 className="h-4 w-4" />
-                </Button>
-              </div>
+              <EngagementBar
+                mixtapeId={mixtape.id}
+                likeCount={mixtape.likeCount}
+                title={mixtape.title}
+              />
             </div>
 
             {/* Tags */}

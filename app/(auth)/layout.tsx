@@ -1,3 +1,5 @@
+import { GoogleAuthProvider } from "@/features/auth/providers/google-provider"
+
 export default function AuthLayout({
   children,
 }: {
@@ -5,7 +7,9 @@ export default function AuthLayout({
 }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted">
-      {children}
+      <GoogleAuthProvider>
+        {children}
+      </GoogleAuthProvider>
     </div>
   )
 }

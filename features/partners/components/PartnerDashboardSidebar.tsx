@@ -5,6 +5,7 @@ import { useAuth } from "@/features/auth"
 
 import {
     ArrowLeft,
+    BarChart3,
     LayoutDashboard,
     LogOut,
     Music,
@@ -29,6 +30,11 @@ export function PartnerDashboardSidebar() {
       title: "Mes Tracks",
       href: "/partners/dashboard/tracks",
       icon: Music,
+    },
+    {
+      title: "Statistiques",
+      href: "/partners/dashboard/stats",
+      icon: BarChart3,
     },
     {
       title: "Collaborations",

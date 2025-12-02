@@ -1,7 +1,6 @@
 "use client"
 
 import { useForm } from "@tanstack/react-form"
-import { zodValidator } from "@tanstack/zod-form-adapter"
 import { useRouter } from "next/navigation"
 import * as React from "react"
 
@@ -23,8 +22,10 @@ import {
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 
-import { signIn } from "@/lib/auth-client"
+import { getDefaultRedirectForRole } from "@/lib/routes.config"
+import { getSession, signIn } from "@/lib/auth-client"
 import { loginSchema } from "../schemas/auth.schema"
+import { GoogleSignInButton } from "./GoogleSignInButton"
 
 export function LoginForm() {
   const router = useRouter()
@@ -45,7 +46,10 @@ export function LoginForm() {
       try {
         const result = await signIn(value.email, value.password)
         if (result.success) {
-          router.push("/dashboard")
+          // Récupérer la session pour connaître le rôle
+          const session = await getSession()
+          const redirectUrl = getDefaultRedirectForRole(session?.user?.role)
+          router.push(redirectUrl)
           router.refresh()
         } else {
           setError(result.error || "Une erreur est survenue lors de la connexion")
@@ -122,6 +126,22 @@ export function LoginForm() {
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Connexion..." : "Se connecter"}
             </Button>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">
+                  Ou continuer avec
+                </span>
+              </div>
+            </div>
+
+            <GoogleSignInButton 
+              onError={(err) => setError(err)} 
+              disabled={isLoading} 
+            />
           </div>
         </form>
       </CardContent>

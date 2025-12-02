@@ -1,9 +1,11 @@
+import { useAuth } from "@/features/auth"
 import { ApiError } from "@/lib/fetcher"
 import { useState } from "react"
 import { partnersApi } from "../api/partners.api"
 import type { UpdatePartnerRequest } from "../api/partners.types"
 
 export const useUpdatePartner = () => {
+  const { accessToken } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -12,7 +14,7 @@ export const useUpdatePartner = () => {
     setError(null)
 
     try {
-      const result = await partnersApi.updatePartner(id, data)
+      const result = await partnersApi.updatePartner(id, data, accessToken)
       return result
     } catch (err) {
       if (err instanceof ApiError) {

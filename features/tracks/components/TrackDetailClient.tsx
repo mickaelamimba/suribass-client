@@ -16,16 +16,14 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/features/auth"
 import { CommentSection } from "@/features/comments/components"
+import { EngagementBar } from "@/features/engagement"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import {
     AlertTriangle,
     ArrowLeft,
     Calendar,
-    Heart,
     Pencil,
-    Share2,
-    Star,
     Trash2
 } from "lucide-react"
 import Link from "next/link"
@@ -90,7 +88,8 @@ export function TrackDetailClient({ id }: TrackDetailClientProps) {
           <TrackPlayer 
             embedUrl={track.embedUrl} 
             platform={platformNames[track.platform] as 'SoundCloud' | 'YouTube' | 'Spotify'} 
-            title={track.title} 
+            title={track.title}
+            thumbnailUrl={track.thumbnailUrl}
           />
 
           <div className="flex flex-col gap-4">
@@ -110,15 +109,11 @@ export function TrackDetailClient({ id }: TrackDetailClientProps) {
               </div>
 
               <div className="flex gap-2">
-                <Button variant="outline" size="icon">
-                  <Heart />
-                </Button>
-                <Button variant="outline" size="icon">
-                  <Star />
-                </Button>
-                <Button variant="outline" size="icon">
-                  <Share2 />
-                </Button>
+                <EngagementBar
+                  trackId={track.id}
+                  likeCount={track.likeCount}
+                  title={track.title}
+                />
               </div>
             </div>
 

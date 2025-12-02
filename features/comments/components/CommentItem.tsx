@@ -139,6 +139,43 @@ export function CommentItem({ comment, onCommentUpdated }: CommentItemProps) {
               />
             </motion.div>
           )}
+
+          {/* Affichage des réponses */}
+          {comment.replies && comment.replies.length > 0 && (
+            <div className="mt-4 space-y-4 border-l-2 border-muted pl-4">
+              {comment.replies.map((reply) => (
+                <motion.div
+                  key={reply.id}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="group relative"
+                >
+                  <div className="flex gap-3">
+                    <Avatar className="h-8 w-8 shrink-0">
+                      <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                        {reply.userName[0].toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <div className="flex-1">
+                      <div className="rounded-lg bg-muted/50 p-3">
+                        <div className="mb-1 flex items-center gap-2">
+                          <span className="text-sm font-semibold">{reply.userName}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {formatDistanceToNow(new Date(reply.createdAt), {
+                              addSuffix: true,
+                              locale: fr,
+                            })}
+                          </span>
+                        </div>
+                        <p className="whitespace-pre-wrap text-sm">{reply.content}</p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </motion.div>

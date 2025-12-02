@@ -1,14 +1,41 @@
 version: '3.8'
 
 services:
-  # En production, on utilise la page de maintenance
-  maintenance:
+  frontend:
+    image: ${CI_REGISTRY_IMAGE:-suribass-client}:${CI_COMMIT_SHORT_SHA:-latest}
+    container_name: suribass-frontend
+    restart: unless-stopped
     ports:
-      - "3000:80"  # Override pour exposer la maintenance sur le port 3000
-    deploy:
-      replicas: 2
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-https://api.suribassmusic.com}
+      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-https://api.suribassmusic.com/api/v1}
+      - NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
+      - API_BASE_URL=${API_BASE_URL:-https://api.suribassmusic.com/api}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - suribass-network
 
-  # L'application est désactivée en mode maintenance
-  suribass-client:
-    deploy:
-      replicas: 0  # Aucune instance de l'app en mode maintenance
+  # Mode maintenance (optionnel)
+  maintenance:
+    image: nginx:alpine
+    container_name: suribass-maintenance
+    restart: unless-stopped
+    ports:
+      - "3001:80"
+    volumes:
+      - ./maintenance:/usr/share/nginx/html:ro
+    profiles:
+      - maintenance
+    networks:
+      - suribass-network
+
+networks:
+  suribass-network:
+    external: true

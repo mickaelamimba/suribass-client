@@ -22,8 +22,10 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 
-import { signUp } from "@/lib/auth-client"
+import { getSession, signUp } from "@/lib/auth-client"
+import { getDefaultRedirectForRole } from "@/lib/routes.config"
 import { registerSchema } from "../schemas/auth.schema"
+import { GoogleSignInButton } from "./GoogleSignInButton"
 
 export function RegisterForm() {
   const router = useRouter()
@@ -46,8 +48,11 @@ export function RegisterForm() {
       try {
         const result = await signUp(value.email, value.username, value.password)
         if (result.success) {
-          router.push("/dashboard")
-          router.refresh() // Refresh to update server components
+          // Récupérer la session pour connaître le rôle
+          const session = await getSession()
+          const redirectUrl = getDefaultRedirectForRole(session?.user?.role)
+          router.push(redirectUrl)
+          router.refresh()
         } else {
           setError(result.error || "Une erreur est survenue lors de l'inscription")
         }
@@ -186,7 +191,7 @@ export function RegisterForm() {
           </FieldGroup>
         </form>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex flex-col gap-4">
         <Button
           type="submit"
           form="register-form"
@@ -195,6 +200,22 @@ export function RegisterForm() {
         >
           {isLoading ? "Inscription..." : "S'inscrire"}
         </Button>
+
+        <div className="relative w-full">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-card px-2 text-muted-foreground">
+              Ou continuer avec
+            </span>
+          </div>
+        </div>
+
+        <GoogleSignInButton 
+          onError={(err) => setError(err)} 
+          disabled={isLoading} 
+        />
       </CardFooter>
     </Card>
   )

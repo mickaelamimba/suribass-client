@@ -34,8 +34,12 @@ export interface MixtapeDto {
   viewCount: number  // Simplified from nested platformStats
   likeCount: number  // Simplified from nested platformStats
   
-  // Score IA
-  score: number | null  // Simplified from object to nullable number
+  // Score IA - peut être un objet ou null
+  score: {
+    score: number
+    recommendationMessage: string | null
+    calculatedAt: string
+  } | null
   
   // Dates
   createdAt: string

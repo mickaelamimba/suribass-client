@@ -1,19 +1,16 @@
 "use client"
 
 import { MixtapeFilters, MixtapeGrid } from "@/features/mixtapes/components"
+import { useMixtapeFilters } from "@/features/mixtapes/hooks/useMixtapeFilters"
 import { useMixtapes } from "@/features/mixtapes/hooks/useMixtapes"
-import type { MixtapeFiltersData } from "@/features/mixtapes/schemas/mixtape.schema"
-import { useState } from "react"
 
 export function MixtapesListClient() {
-  const [filters, setFilters] = useState<MixtapeFiltersData>({
-    sortBy: "recent",
-  })
+  const { apiFilters } = useMixtapeFilters()
 
   const { mixtapes, isLoading } = useMixtapes({
     page: 1,
     pageSize: 20,
-    ...filters,
+    ...apiFilters,
   })
 
   return (
@@ -25,7 +22,7 @@ export function MixtapesListClient() {
         </p>
       </div>
 
-      <MixtapeFilters filters={filters} onFiltersChange={setFilters} />
+      <MixtapeFilters />
       
       <MixtapeGrid mixtapes={mixtapes?.items} isLoading={isLoading} />
       

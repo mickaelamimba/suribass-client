@@ -38,5 +38,9 @@ export const useExtractMetadata = () => {
     error,
     clearError: () => setError(null),
     clearMetadata: () => setMetadata(null),
+    reset: () => {
+      setMetadata(null)
+      setError(null)
+    },
   }
 }
